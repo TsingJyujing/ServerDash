@@ -1,0 +1,352 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- 引入 ECharts 文件 -->
+    <script src="/static/js/echarts.min.js"></script>
+    <script src="/static/js/jquery-3.2.1.min.js"></script>
+    <title>服务器实时查看</title>
+    <style type="text/css">
+    html, body
+    {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        overflow:hidden;
+    }
+    #CurrentServer
+    {
+        height: 100%;
+        z-index: 0;
+    }
+    </style>
+</head>
+<body>
+    <div id="CurrentServer" style="height: 100%; width: 100%"></div>
+
+<script type="text/javascript">
+
+    var myChart = echarts.init(document.getElementById('CurrentServer'));
+
+    option = {
+    backgroundColor: '#1b1b1b',
+    tooltip : {
+        formatter: "{a} <br/>{c} {b}"
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    series : [
+        {
+            name:'CPU',
+            type:'gauge',
+            min:0,
+            max:100,
+            splitNumber:10,
+            radius: '50%',
+            axisLine: {            // 坐标轴线
+                lineStyle: {       // 属性lineStyle控制线条样式
+                    color: [[0.09, 'lime'],[0.82, '#1e90ff'],[1, '#ff4500']],
+                    width: 3,
+                    shadowColor : '#fff', //默认透明
+                    shadowBlur: 10
+                }
+            },
+            axisLabel: {            // 坐标轴小标记
+                textStyle: {       // 属性lineStyle控制线条样式
+                    fontWeight: 'bolder',
+                    color: '#fff',
+                    shadowColor : '#fff', //默认透明
+                    shadowBlur: 10
+                }
+            },
+            axisTick: {            // 坐标轴小标记
+                length :15,        // 属性length控制线长
+                lineStyle: {       // 属性lineStyle控制线条样式
+                    color: 'auto',
+                    shadowColor : '#fff', //默认透明
+                    shadowBlur: 10
+                }
+            },
+            splitLine: {           // 分隔线
+                length :25,         // 属性length控制线长
+                lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                    width:3,
+                    color: '#fff',
+                    shadowColor : '#fff', //默认透明
+                    shadowBlur: 10
+                }
+            },
+            pointer: {           // 分隔线
+                shadowColor : '#fff', //默认透明
+                shadowBlur: 5
+            },
+            title : {
+                textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                    fontWeight: 'bolder',
+                    fontSize: 20,
+                    fontStyle: 'italic',
+                    color: '#fff',
+                    shadowColor : '#fff', //默认透明
+                    shadowBlur: 10
+                }
+            },
+            detail : {
+                backgroundColor: 'rgba(30,144,255,0.8)',
+                borderWidth: 1,
+                borderColor: '#fff',
+                shadowColor : '#fff', //默认透明
+                shadowBlur: 5,
+                offsetCenter: [0, '50%'],       // x, y，单位px
+                textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                    fontWeight: 'bolder',
+                    color: '#fff'
+                }
+            },
+            data:[{value: 40, name: 'CPU(%)'}]
+        },
+        {
+            name:'Memory',
+            type:'gauge',
+            center : ['25%', '55%'],    // 默认全局居中
+            radius : '50%',
+            min:0,
+            max:7,
+            endAngle:45,
+            splitNumber:10,
+            axisLine: {            // 坐标轴线
+                lineStyle: {       // 属性lineStyle控制线条样式
+                    color: [[0.29, 'lime'],[0.86, '#1e90ff'],[1, '#ff4500']],
+                    width: 2,
+                    shadowColor : '#fff', //默认透明
+                    shadowBlur: 10
+                }
+            },
+            axisLabel: {            // 坐标轴小标记
+                textStyle: {       // 属性lineStyle控制线条样式
+                    fontWeight: 'bolder',
+                    color: '#fff',
+                    shadowColor : '#fff', //默认透明
+                    shadowBlur: 10
+                }
+            },
+            axisTick: {            // 坐标轴小标记
+                length :12,        // 属性length控制线长
+                lineStyle: {       // 属性lineStyle控制线条样式
+                    color: 'auto',
+                    shadowColor : '#fff', //默认透明
+                    shadowBlur: 10
+                }
+            },
+            splitLine: {           // 分隔线
+                length :20,         // 属性length控制线长
+                lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                    width:3,
+                    color: '#fff',
+                    shadowColor : '#fff', //默认透明
+                    shadowBlur: 10
+                }
+            },
+            pointer: {
+                width:5,
+                shadowColor : '#fff', //默认透明
+                shadowBlur: 5
+            },
+            title : {
+                offsetCenter: [0, '-30%'],       // x, y，单位px
+                textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                    fontWeight: 'bolder',
+                    fontStyle: 'italic',
+                    color: '#fff',
+                    shadowColor : '#fff', //默认透明
+                    shadowBlur: 10
+                }
+            },
+            detail : {
+                //backgroundColor: 'rgba(30,144,255,0.8)',
+               // borderWidth: 1,
+                borderColor: '#fff',
+                shadowColor : '#fff', //默认透明
+                shadowBlur: 5,
+                width: 80,
+                height:30,
+                offsetCenter: [25, '20%'],       // x, y，单位px
+                textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                    fontWeight: 'bolder',
+                    color: '#fff'
+                }
+            },
+            data:[{value: 1.5, name: 'RAM(GB)'}]
+        },
+        {
+            name:'System',
+            type:'gauge',
+            center : ['75%', '50%'],    // 默认全局居中
+            radius : '50%',
+            min:0,
+            max:2,
+            startAngle:135,
+            endAngle:45,
+            splitNumber:5,
+            axisLine: {            // 坐标轴线
+                lineStyle: {       // 属性lineStyle控制线条样式
+                    color: [[0.2, 'lime'],[0.8, '#1e90ff'],[1, '#ff4500']],
+                    width: 2,
+                    shadowColor : '#fff', //默认透明
+                    shadowBlur: 10
+                }
+            },
+            axisTick: {            // 坐标轴小标记
+                length :12,        // 属性length控制线长
+                lineStyle: {       // 属性lineStyle控制线条样式
+                    color: 'auto',
+                    shadowColor : '#fff', //默认透明
+                    shadowBlur: 10
+                }
+            },
+            axisLabel: {
+                textStyle: {       // 属性lineStyle控制线条样式
+                    fontWeight: 'bolder',
+                    color: '#fff',
+                    shadowColor : '#fff', //默认透明
+                    shadowBlur: 10
+                },
+            },
+            splitLine: {           // 分隔线
+                length :15,         // 属性length控制线长
+                lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                    width:3,
+                    color: '#fff',
+                    shadowColor : '#fff', //默认透明
+                    shadowBlur: 10
+                }
+            },
+            pointer: {
+                width:2,
+                shadowColor : '#fff', //默认透明
+                shadowBlur: 5
+            },
+            title : {
+                show: true,
+                offsetCenter: [0, '-30%'],       // x, y，单位px
+                textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                    fontWeight: 'bolder',
+                    fontStyle: 'italic',
+                    color: '#fff',
+                    shadowColor : '#fff', //默认透明
+                    shadowBlur: 10
+                }
+            },
+            detail : {
+                show: false
+            },
+            data:[{value: 0.5, name: 'System(GB)'}]
+        },
+        {
+            name:'External',
+            type:'gauge',
+            center : ['75%', '50%'],    // 默认全局居中
+            radius : '50%',
+            min:0,
+            max:2,
+            startAngle:315,
+            endAngle:225,
+            splitNumber:5,
+            axisLine: {            // 坐标轴线
+                lineStyle: {       // 属性lineStyle控制线条样式
+                    color: [[0.2, 'lime'],[0.8, '#1e90ff'],[1, '#ff4500']],
+                    width: 2,
+                    shadowColor : '#fff', //默认透明
+                    shadowBlur: 10
+                }
+            },
+            axisTick: {            // 坐标轴小标记
+                show: false
+            },
+            axisLabel: {
+                textStyle: {       // 属性lineStyle控制线条样式
+                    fontWeight: 'bolder',
+                    color: '#fff',
+                    shadowColor : '#fff', //默认透明
+                    shadowBlur: 10
+                },
+            },
+            splitLine: {           // 分隔线
+                length :15,         // 属性length控制线长
+                lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                    width:3,
+                    color: '#fff',
+                    shadowColor : '#fff', //默认透明
+                    shadowBlur: 10
+                }
+            },
+            pointer: {
+                width:2,
+                shadowColor : '#fff', //默认透明
+                shadowBlur: 5
+            },
+            title : {
+                show: true,
+                offsetCenter: [0, '30%'],       // x, y，单位px
+                textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                    fontWeight: 'bolder',
+                    fontStyle: 'italic',
+                    color: '#fff',
+                    shadowColor : '#fff', //默认透明
+                    shadowBlur: 10
+                }
+            },
+            detail : {
+                show: false
+            },
+            data:[{value: 0.5, name: 'External(GB)'}]
+        }
+    ]
+};
+var updateDisk = function (){
+    $.get("/api/current/disk/all",function(data){
+        var memObj = JSON.parse(data);
+        var ratio = 1024.0*1024.0*1024.0;
+        option.series[2].data[0].value = memObj["/dev/sda1"]["used"]/ratio;
+        option.series[2].max = Math.ceil(memObj["/dev/sda1"]["total"]/ratio);
+        option.series[3].data[0].value = memObj["/dev/sdb1"]["used"]/ratio;
+        option.series[3].max = Math.ceil(memObj["/dev/sdb1"]["total"]/ratio);
+    });
+    myChart.setOption(option);
+};
+
+var updateCPU= function (){
+    $.get("/api/current/cpu/sum",function(data){
+        option.series[0].data[0].value = parseFloat(data);
+    });
+    myChart.setOption(option);
+};
+
+var updateMemory= function (){
+    $.get("/api/current/memory",function(data){
+        var memObj = JSON.parse(data);
+        var ratio = 1024.0*1024.0*1024.0;
+        option.series[1].data[0].value = Math.ceil(memObj['used_memory']/ratio*20)/20.0;
+        option.series[1].max = Math.ceil(memObj['total_memory']/ratio);
+    });
+    myChart.setOption(option);
+};
+
+updateCPU();
+updateMemory();
+updateDisk();
+
+setInterval(updateCPU,2000);
+setInterval(updateMemory,10000);
+setInterval(updateDisk,60000);
+
+
+</script>
+</body>
+</html>

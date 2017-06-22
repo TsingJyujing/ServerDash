@@ -28,11 +28,14 @@ urlpatterns = [
     url(r'^api/current/disk/list', current_list_disk),
     url(r'^api/current/disk/query', current_query_disk),
 
+    url(r'^api/current/process', get_process_info),
+
     url(r'^api/history/cpu/single', history_cpu_single),
     url(r'^api/history/cpu/sum', history_cpu_sum),
 
     url(r'^api/history/memory/virtual', history_memory_virtual),
     url(r'^api/history/memory/swap', history_memory_swap),
+    url(r'^view/current/process', view_current_process),
     url(r'^view/current/lite', view_current_lite),
     url(r'^view/current/disk', view_current_disk),
     url(r'^view/current', view_current),

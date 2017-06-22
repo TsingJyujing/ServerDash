@@ -68,3 +68,7 @@ def view_current_lite(req):
 
 def view_current_disk(req):
     return render(req, "view_current_disk.html")
+
+
+def view_current_process(req):
+    return render(req, "view_process.html")

@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 import datetime
+import threading
+
 import psutil
 import string
 import json
@@ -165,3 +167,43 @@ def history_cpu_single(request):
         }))
     finally:
         conn.close()
+
+
+class GetProcessInfo(threading.Thread):
+    def __init__(self, pid, interval=1):
+        super(GetProcessInfo, self).__init__(name="ProcessInfo%d" % pid)
+        self.interval = interval
+        self.pid = pid
+        self.done = False
+        self.process_info = {}
+
+    def run(self):
+        process = psutil.Process(self.pid)
+        self.process_info = {
+            "pid": self.pid,
+            "name": process.name(),
+            "exe": process.exe(),
+            "cwd": process.cwd(),
+            "cmdline": process.cmdline(),
+            # "cpu": process.cpu_percent(interval=self.interval),
+            "mem": process.memory_percent()
+        }
+        self.done = True
+
+
+def get_process_info(request):
+    retval = list()
+    for process in psutil.process_iter():
+        try:
+            retval.append({
+                "pid": process.pid,
+                "name": process.name(),
+                "exe": process.exe(),
+                "cwd": process.cwd(),
+                "cmdline": process.cmdline(),
+                # "cpu": process.cpu_percent(interval=self.interval),
+                "mem": process.memory_percent()
+            })
+        except:
+            pass
+    return HttpResponse(json.dumps(retval))

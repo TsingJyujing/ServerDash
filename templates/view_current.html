@@ -313,10 +313,10 @@ var updateDisk = function (){
     $.get("/api/current/disk/all",function(data){
         var memObj = JSON.parse(data);
         var ratio = 1024.0*1024.0*1024.0;
-        option.series[2].data[0].value = memObj["/dev/sda1"]["used"]/ratio;
-        option.series[2].max = Math.ceil(memObj["/dev/sda1"]["total"]/ratio);
-        option.series[3].data[0].value = memObj["/dev/sdb1"]["used"]/ratio;
-        option.series[3].max = Math.ceil(memObj["/dev/sdb1"]["total"]/ratio);
+        option.series[2].data[0].value = memObj["C:\\"]["used"]/ratio;
+        option.series[2].max = Math.ceil(memObj["C:\\"]["total"]/ratio);
+        option.series[3].data[0].value = memObj["F:\\"]["used"]/ratio;
+        option.series[3].max = Math.ceil(memObj["F:\\"]["total"]/ratio);
     });
     myChart.setOption(option);
 };
@@ -332,7 +332,7 @@ var updateMemory= function (){
     $.get("/api/current/memory",function(data){
         var memObj = JSON.parse(data);
         var ratio = 1024.0*1024.0*1024.0;
-        option.series[1].data[0].value = Math.ceil(memObj['used_memory']/ratio*20)/20.0;
+        option.series[1].data[0].value = Math.ceil(memObj['used_memory']/ratio*100.0)/100.0;
         option.series[1].max = Math.ceil(memObj['total_memory']/ratio);
     });
     myChart.setOption(option);

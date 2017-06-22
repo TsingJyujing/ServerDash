@@ -5,16 +5,10 @@ import datetime
 import psutil
 import string
 import json
-import psycopg2
-from DBUtils.PooledDB import PooledDB
 from django.http import HttpResponse
+from RemoteDash.settings import get_dbpool
 
-dbPool = PooledDB(psycopg2, 5,
-                  host="192.168.1.103",
-                  port=5432,
-                  database="monitor",
-                  user="postgres",
-                  password="979323")
+dbPool = get_dbpool(5)
 
 
 def get(req, key, default):
@@ -83,7 +77,7 @@ def current_query_disk(request):
 def history_cpu_sum(request):
     conn = dbPool.connection()
     try:
-        default_start = datetime.datetime.now() - datetime.timedelta(days=1)
+        default_start = datetime.datetime.now() - datetime.timedelta(hours=1)
         query_start = get(request, "start", default_start.strftime("%Y-%m-%d %H:%M:%S"))
         sql_cmd = "SELECT tick, usage FROM public.cpu WHERE tick>='%s' ORDER BY tick" % query_start
         cur = conn.cursor()
@@ -106,7 +100,7 @@ def history_cpu_sum(request):
 def history_memory_virtual(request):
     conn = dbPool.connection()
     try:
-        default_start = datetime.datetime.now() - datetime.timedelta(days=1)
+        default_start = datetime.datetime.now() - datetime.timedelta(hours=1)
         query_start = get(request, "start", default_start.strftime("%Y-%m-%d %H:%M:%S"))
         sql_cmd = "SELECT tick, precent FROM public.memory_view WHERE tick>='%s' ORDER BY tick" % query_start
         cur = conn.cursor()
@@ -129,7 +123,7 @@ def history_memory_virtual(request):
 def history_memory_swap(request):
     conn = dbPool.connection()
     try:
-        default_start = datetime.datetime.now() - datetime.timedelta(days=1)
+        default_start = datetime.datetime.now() - datetime.timedelta(hours=1)
         query_start = get(request, "start", default_start.strftime("%Y-%m-%d %H:%M:%S"))
         sql_cmd = "SELECT tick, swap_precent FROM public.memory_view WHERE tick>='%s' ORDER BY tick" % query_start
         cur = conn.cursor()
@@ -152,7 +146,7 @@ def history_memory_swap(request):
 def history_cpu_single(request):
     conn = dbPool.connection()
     try:
-        default_start = datetime.datetime.now() - datetime.timedelta(days=1)
+        default_start = datetime.datetime.now() - datetime.timedelta(hours=1)
         query_start = get(request, "start", default_start.strftime("%Y-%m-%d %H:%M:%S"))
         index = string.atoi(get(request, "cpuid", "0"))
         sql_cmd = "SELECT tick, usage_detail[%d] FROM public.cpu WHERE tick>='%s' ORDER BY tick" % (index, query_start)

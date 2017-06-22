@@ -33,7 +33,8 @@ urlpatterns = [
 
     url(r'^api/history/memory/virtual', history_memory_virtual),
     url(r'^api/history/memory/swap', history_memory_swap),
-
+    url(r'^view/current/lite', view_current_lite),
+    url(r'^view/current/disk', view_current_disk),
     url(r'^view/current', view_current),
 
     url(r'^view/history/cpu/single', view_history_cpu_single),

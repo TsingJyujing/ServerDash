@@ -60,3 +60,11 @@ def view_history_cpu_single(req):
 
 def view_main(req):
     return render(req, "index_page.html")
+
+
+def view_current_lite(req):
+    return render(req, "view_current_table.html")
+
+
+def view_current_disk(req):
+    return render(req, "view_current_disk.html")

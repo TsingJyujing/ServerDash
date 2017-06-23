@@ -79,7 +79,8 @@ def current_query_disk(request):
 def history_cpu_sum(request):
     conn = dbPool.connection()
     try:
-        default_start = datetime.datetime.now() - datetime.timedelta(hours=1)
+        hours = string.atoi(get(request, "hours", "2"))
+        default_start = datetime.datetime.now() - datetime.timedelta(hours=hours)
         query_start = get(request, "start", default_start.strftime("%Y-%m-%d %H:%M:%S"))
         sql_cmd = "SELECT tick, usage FROM public.cpu WHERE tick>='%s' ORDER BY tick" % query_start
         cur = conn.cursor()
@@ -102,7 +103,8 @@ def history_cpu_sum(request):
 def history_memory_virtual(request):
     conn = dbPool.connection()
     try:
-        default_start = datetime.datetime.now() - datetime.timedelta(hours=1)
+        hours = string.atoi(get(request, "hours", "2"))
+        default_start = datetime.datetime.now() - datetime.timedelta(hours=hours)
         query_start = get(request, "start", default_start.strftime("%Y-%m-%d %H:%M:%S"))
         sql_cmd = "SELECT tick, precent FROM public.memory_view WHERE tick>='%s' ORDER BY tick" % query_start
         cur = conn.cursor()
@@ -125,7 +127,8 @@ def history_memory_virtual(request):
 def history_memory_swap(request):
     conn = dbPool.connection()
     try:
-        default_start = datetime.datetime.now() - datetime.timedelta(hours=1)
+        hours = string.atoi(get(request, "hours", "2"))
+        default_start = datetime.datetime.now() - datetime.timedelta(hours=hours)
         query_start = get(request, "start", default_start.strftime("%Y-%m-%d %H:%M:%S"))
         sql_cmd = "SELECT tick, swap_precent FROM public.memory_view WHERE tick>='%s' ORDER BY tick" % query_start
         cur = conn.cursor()
@@ -148,10 +151,37 @@ def history_memory_swap(request):
 def history_cpu_single(request):
     conn = dbPool.connection()
     try:
-        default_start = datetime.datetime.now() - datetime.timedelta(hours=1)
+        hours = string.atoi(get(request, "hours", "2"))
+        default_start = datetime.datetime.now() - datetime.timedelta(hours=hours)
         query_start = get(request, "start", default_start.strftime("%Y-%m-%d %H:%M:%S"))
         index = string.atoi(get(request, "cpuid", "0"))
         sql_cmd = "SELECT tick, usage_detail[%d] FROM public.cpu WHERE tick>='%s' ORDER BY tick" % (index, query_start)
+        cur = conn.cursor()
+        cur.execute(sql_cmd)
+        query_result = cur.fetchall()
+        cur.close()
+        return HttpResponse(json.dumps({
+            "tick": [row[0].strftime("%Y-%m-%d %H:%M:%S") for row in query_result],
+            "data": [row[1] for row in query_result]
+        }))
+    except Exception as ex:
+        return HttpResponse(json.dumps({
+            "status": "error",
+            "error_info": ex.message
+        }))
+    finally:
+        conn.close()
+
+
+def history_query_disk(request):
+    conn = dbPool.connection()
+    try:
+        hours = string.atoi(get(request, "hours", "2"))
+        default_start = datetime.datetime.now() - datetime.timedelta(hours=hours)
+        query_start = get(request, "start", default_start.strftime("%Y-%m-%d %H:%M:%S"))
+        device_route = get(request, "device", "0")
+        sql_cmd = "SELECT tick,precent FROM public.disk_view " \
+                  "WHERE mount_point='%s' AND tick>='%s' ORDER BY tick" % (device_route, query_start)
         cur = conn.cursor()
         cur.execute(sql_cmd)
         query_result = cur.fetchall()
@@ -192,18 +222,28 @@ class GetProcessInfo(threading.Thread):
 
 
 def get_process_info(request):
+    order_by = get(request, "order_by", "mem")
+    sort_type = get(request, "sort_type", "desc")
+    if order_by not in ("pid", "name", "exe", "cwd", "mem"):
+        order_by = "mem"
+    if sort_type not in ("asc", "desc"):
+        sort_type = "desc"
     retval = list()
     for process in psutil.process_iter():
         try:
             retval.append({
                 "pid": process.pid,
-                "name": process.name(),
-                "exe": process.exe(),
-                "cwd": process.cwd(),
-                "cmdline": process.cmdline(),
+                "name": process.name().decode("gb2312"),
+                "exe": process.exe().decode("gb2312"),
+                "cwd": process.cwd().decode("gb2312"),
+                "cmdline": (" ".join(process.cmdline())).decode("gb2312"),
                 # "cpu": process.cpu_percent(interval=self.interval),
                 "mem": process.memory_percent()
             })
         except:
             pass
+
+    retval.sort(key=lambda x: x[order_by])
+    if sort_type=="desc":
+        retval.reverse()
     return HttpResponse(json.dumps(retval))

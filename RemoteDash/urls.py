@@ -19,22 +19,21 @@ from apis.views import *
 from frontend_render.views import *
 
 urlpatterns = [
+
     url(r'^api/current/cpu/sum', current_cpu_sum),
     url(r'^api/current/cpu/single', current_cpu_single),
-
     url(r'^api/current/memory', current_memory),
-
     url(r'^api/current/disk/all', current_all_disk),
     url(r'^api/current/disk/list', current_list_disk),
     url(r'^api/current/disk/query', current_query_disk),
-
     url(r'^api/current/process', get_process_info),
 
     url(r'^api/history/cpu/single', history_cpu_single),
     url(r'^api/history/cpu/sum', history_cpu_sum),
-
     url(r'^api/history/memory/virtual', history_memory_virtual),
     url(r'^api/history/memory/swap', history_memory_swap),
+    url(r'^api/history/disk/query', history_query_disk),
+
     url(r'^view/current/process', view_current_process),
     url(r'^view/current/lite', view_current_lite),
     url(r'^view/current/disk', view_current_disk),
@@ -42,15 +41,11 @@ urlpatterns = [
 
     url(r'^view/history/cpu/single', view_history_cpu_single),
     url(r'^view/history/cpu', view_history_cpu),
-
     url(r'^view/history/memory/virtual', view_history_memory_virtual),
     url(r'^view/history/memory/swap', view_history_memory_swap),
 
     url(r'^admin/', admin.site.urls),
-    url(r'^', view_main),
-]
 
-"""
-url(r'^api/history/cpu/single', history_cpu_single),
-url(r'^api/history/disk/query', history_query_disk),
-"""
+    url(r'^', view_main),
+
+]

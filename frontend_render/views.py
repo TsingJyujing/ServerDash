@@ -72,3 +72,11 @@ def view_current_disk(req):
 
 def view_current_process(req):
     return render(req, "view_process.html")
+
+
+def view_history_disk(req):
+    device_id = get(req, "device", "C:\\")
+    return render(req, "view_history_disk.html", context={
+        "device": device_id,
+        "data_api": "/api/history/disk/query?device=" + device_id.replace("\\", "\\\\")
+    })

@@ -12,6 +12,8 @@ from RemoteDash.settings import get_dbpool
 
 dbPool = get_dbpool(5)
 
+default_query_hour_str = "12"
+
 
 def get(req, key, default):
     try:
@@ -79,7 +81,7 @@ def current_query_disk(request):
 def history_cpu_sum(request):
     conn = dbPool.connection()
     try:
-        hours = string.atoi(get(request, "hours", "2"))
+        hours = string.atoi(get(request, "hours", default_query_hour_str))
         default_start = datetime.datetime.now() - datetime.timedelta(hours=hours)
         query_start = get(request, "start", default_start.strftime("%Y-%m-%d %H:%M:%S"))
         sql_cmd = "SELECT tick, usage FROM public.cpu WHERE tick>='%s' ORDER BY tick" % query_start
@@ -103,7 +105,7 @@ def history_cpu_sum(request):
 def history_memory_virtual(request):
     conn = dbPool.connection()
     try:
-        hours = string.atoi(get(request, "hours", "2"))
+        hours = string.atoi(get(request, "hours", default_query_hour_str))
         default_start = datetime.datetime.now() - datetime.timedelta(hours=hours)
         query_start = get(request, "start", default_start.strftime("%Y-%m-%d %H:%M:%S"))
         sql_cmd = "SELECT tick, precent FROM public.memory_view WHERE tick>='%s' ORDER BY tick" % query_start
@@ -127,7 +129,7 @@ def history_memory_virtual(request):
 def history_memory_swap(request):
     conn = dbPool.connection()
     try:
-        hours = string.atoi(get(request, "hours", "2"))
+        hours = string.atoi(get(request, "hours", default_query_hour_str))
         default_start = datetime.datetime.now() - datetime.timedelta(hours=hours)
         query_start = get(request, "start", default_start.strftime("%Y-%m-%d %H:%M:%S"))
         sql_cmd = "SELECT tick, swap_precent FROM public.memory_view WHERE tick>='%s' ORDER BY tick" % query_start
@@ -151,7 +153,7 @@ def history_memory_swap(request):
 def history_cpu_single(request):
     conn = dbPool.connection()
     try:
-        hours = string.atoi(get(request, "hours", "2"))
+        hours = string.atoi(get(request, "hours", default_query_hour_str))
         default_start = datetime.datetime.now() - datetime.timedelta(hours=hours)
         query_start = get(request, "start", default_start.strftime("%Y-%m-%d %H:%M:%S"))
         index = string.atoi(get(request, "cpuid", "0"))
@@ -176,7 +178,7 @@ def history_cpu_single(request):
 def history_query_disk(request):
     conn = dbPool.connection()
     try:
-        hours = string.atoi(get(request, "hours", "2"))
+        hours = string.atoi(get(request, "hours", default_query_hour_str))
         default_start = datetime.datetime.now() - datetime.timedelta(hours=hours)
         query_start = get(request, "start", default_start.strftime("%Y-%m-%d %H:%M:%S"))
         device_route = get(request, "device", "0")
@@ -244,6 +246,6 @@ def get_process_info(request):
             pass
 
     retval.sort(key=lambda x: x[order_by])
-    if sort_type=="desc":
+    if sort_type == "desc":
         retval.reverse()
     return HttpResponse(json.dumps(retval))

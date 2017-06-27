@@ -120,7 +120,7 @@ STATICFILES_DIRS = [
 ]
 
 DATABASE_SETTINGS = {
-    "host": "172.16.9.179",
+    "host": "localhost",
     "port": 5432,
     "database": "monitor",
     "user": "postgres",

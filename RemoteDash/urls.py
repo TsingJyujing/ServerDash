@@ -43,7 +43,7 @@ urlpatterns = [
     url(r'^view/history/cpu', view_history_cpu),
     url(r'^view/history/memory/virtual', view_history_memory_virtual),
     url(r'^view/history/memory/swap', view_history_memory_swap),
-
+    url(r'^view/history/disk', view_history_disk),
     url(r'^admin/', admin.site.urls),
 
     url(r'^', view_main),

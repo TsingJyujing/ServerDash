@@ -6,7 +6,7 @@ from DBUtils.PooledDB import PooledDB
 import threading
 
 dbPool = PooledDB(psycopg2, 5,
-                  host="192.168.1.103",
+                  host="localhost",
                   port=5432,
                   database="monitor",
                   user="postgres",

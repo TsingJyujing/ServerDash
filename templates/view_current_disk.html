@@ -21,8 +21,7 @@
 
 </head>
 <body>
-<table class="table table-hover">
-    <script type="text/javascript">
+	<script type="text/javascript">
 
         /*
         * ratio: from 0~1
@@ -89,25 +88,26 @@
 
 		$(document).ready(refreshDisks);
 	</script>
-	<caption>当前服务器状态概览</caption>
-	<thead>
-		<tr>
-			<th width="160px" align="center">类型</th>
-			<th width="160px" align="center">状态</th>
-			<th align="right">
-				<button
-                        type="button"
-                        class="btn btn-default btn-sm"
-                        id="btn_refresh"
-                        onclick=refreshDisks()>
-					<span class="glyphicon glyphicon-refresh"></span> 刷新
-				</button>
-			</th>
-		</tr>
-	</thead>
-	<tbody id="DiskShowRange">
+	<table class="table table-hover">
+		<caption>当前服务器状态概览</caption>
+		<thead>
+			<tr>
+				<th width="160px" align="center">类型</th>
+				<th width="160px" align="center">状态</th>
+				<th align="right">
+					<button
+							type="button"
+							class="btn btn-default btn-sm"
+							id="btn_refresh"
+							onclick=refreshDisks()>
+						<span class="glyphicon glyphicon-refresh"></span> 刷新
+					</button>
+				</th>
+			</tr>
+		</thead>
+		<tbody id="DiskShowRange">
 
-	</tbody>
-</table>
+		</tbody>
+	</table>
 </body>
 </html>

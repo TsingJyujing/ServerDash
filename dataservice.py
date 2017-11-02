@@ -13,8 +13,7 @@ dbPool = PooledDB(psycopg2, 5,
                   password="979323")
 
 sql_insert_cpu = "INSERT INTO public.cpu (tick, usage, usage_detail) VALUES ('%s', %f, '%s');"
-sql_insert_memory = "INSERT INTO public.memory " \
-                    "(tick, total, used, swap_total, swap_used) VALUES ('%s', %f, %f, %f, %f);"
+sql_insert_memory = "INSERT INTO public.memory (tick, total, used, swap_total, swap_used) VALUES ('%s', %f, %f, %f, %f);"
 sql_insert_disk = "INSERT INTO public.disk (tick, mount_point, total, used) VALUES ('%s','%s',%f,%f);"
 
 
@@ -44,7 +43,7 @@ class CPUMonitor(threading.Thread):
             cpu_usage = psutil.cpu_percent(interval=self.interval, percpu=True)
             mean_usage = sum(cpu_usage) / len(cpu_usage)
             self.write_data(cpu_usage, mean_usage)
-            print "CPU usage logged successfully at %s" % get_now_tick()
+            print("CPU usage logged successfully at %s" % get_now_tick())
             time.sleep(self.sleep)
 
 
@@ -65,7 +64,7 @@ class MemoryMonitor(threading.Thread):
             meminfo = psutil.virtual_memory()
             swap_meminfo = psutil.swap_memory()
             self.write_data(meminfo.total, meminfo.used, swap_meminfo.total, swap_meminfo.used)
-            print "Memory usage logged successfully at %s" % get_now_tick()
+            print("Memory usage logged successfully at %s" % get_now_tick())
             time.sleep(self.sleep)
 
 
@@ -87,7 +86,26 @@ class DiskMonitor(threading.Thread):
             for disk in disk_parts:
                 disk_use = psutil.disk_usage(disk.mountpoint)
                 self.write_data(disk.device, disk_use.total, disk_use.used)
-            print "Disk usage logged successfully at %s" % get_now_tick()
+            print("Disk usage logged successfully at %s" % get_now_tick())
+            time.sleep(self.sleep)
+
+
+class CleanDatabase(threading.Thread):
+    def __init__(self, sleep=600):
+        super(CleanDatabase, self).__init__(name="DatabaseCleaner")
+        self.sleep = sleep
+        self.conn = dbPool.connection()
+
+    def remove_epired(self, table_name):
+        curs = self.conn.cursor()
+        curs.execute("DELETE FROM public.%s WHERE tick<=(now()- INTERVAL '30d');" % table_name)
+        self.conn.commit()
+        curs.close()
+
+    def run(self):
+        while True:
+            [self.remove_epired(table_name) for table_name in ("cpu", "memory", "disk")]
+            print("Expired data removed at " + get_now_tick())
             time.sleep(self.sleep)
 
 
